@@ -1,5 +1,10 @@
 import usersData from './users.json'
-import { UserEntry, NoPasswordInUserEntry, AddUserEntry } from '../../types'
+import { 
+    UserEntry, 
+    NoPasswordInUserEntry, 
+    AddUserEntry,
+    UpdateUserEntry 
+} from '../../types'
 import { Roles } from '../../enums'
 
 const users: UserEntry[] = usersData as UserEntry[]
@@ -60,9 +65,32 @@ const deleteUser = ( id: number ) : UserEntry[] => {
     return user
 }
 
+const updateUser = ( id: number, newUserData: UpdateUserEntry ) => {
+
+    const index = users.findIndex(user => user.id === id)
+    const user  = users[index]
+
+    const userUpdate = {
+        name: newUserData.name,
+        surnames: newUserData.surnames,
+        nickname: newUserData.nickname,
+        email: newUserData.email,
+        address: newUserData.address
+    }
+
+    return users[index] = {
+        id: user.id,
+        ...userUpdate,
+        password: user.password,
+        rol: user.rol,
+        create_date: user.create_date,
+    }
+}
+
 export default {
     deleteUser,
     getUsers,
     getUserById,
-    addUser
+    addUser,
+    updateUser
 }

@@ -1,4 +1,4 @@
-import { AddUserEntry } from "../../types"
+import { AddUserEntry, UpdateUserEntry } from "../../types"
 import { isString, isEmail, isNumber } from '../../utils'
 
 const parseProp = ( property: any, nameOfProperty:string ):string => {
@@ -41,3 +41,15 @@ export const toNewUserEntry = (object: any):AddUserEntry => {
 
     return newUser
 }
+
+export const toUpdateUserEntry = ( object: any ): UpdateUserEntry => {
+    const updateUser:UpdateUserEntry = {
+        name: parseProp(object.name, 'name'),
+        surnames: parseProp(object.surnames, 'surnames'),
+        nickname: parseProp(object.nickname, 'nickname'),
+        email: parseEmail(object.email),
+        address: parseProp(object.address, 'address')
+    } 
+
+    return updateUser
+} 

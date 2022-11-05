@@ -14,3 +14,4 @@ export interface UserEntry {
 
 export type NoPasswordInUserEntry = Omit<UserEntry, 'password'>
 export type AddUserEntry = Omit<UserEntry, 'id' | 'rol' | 'create_date'>
+export type UpdateUserEntry = Omit<AddUserEntry, 'password'>

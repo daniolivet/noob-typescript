@@ -1,6 +1,10 @@
 import express from 'express'
 import usersServices from '../services/Users/usersServices'
-import { toNewUserEntry, parseId } from '../services/Users/validations'
+import { 
+  toNewUserEntry,
+  toUpdateUserEntry, 
+  parseId 
+} from '../services/Users/validations'
 
 const router = express.Router()
 
@@ -66,6 +70,27 @@ router.delete('/:id', (req, res) => {
     })
   }
 
+})
+
+router.put('/:id', (req, res) => {
+  try {
+    const id          = parseId(+req.params.id)
+    const newUserData = toUpdateUserEntry(req.body)
+
+    const userUpdated = usersServices.updateUser(id, newUserData)
+
+    console.log(userUpdated);
+    res.status(200).send({
+      code: 200,
+      message: 'User updated',
+      data: userUpdated
+    })
+  } catch (err) {
+    res.status(400).send({
+      code: 400,
+      message: err.message
+    })
+  }
 })
 
 export default router
