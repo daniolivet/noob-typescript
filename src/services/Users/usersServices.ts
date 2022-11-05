@@ -48,7 +48,20 @@ const addUser = ( newUserEntry:AddUserEntry ): AddUserEntry  => {
     return newUser
 }
 
+const deleteUser = ( id: number ) : UserEntry[] => {
+    const userIndex = users.findIndex( user => user.id === id)
+
+    if( !userIndex ) {
+        throw new Error('User doesn\'t exist')
+    }
+    
+    const user = users.splice(userIndex)
+
+    return user
+}
+
 export default {
+    deleteUser,
     getUsers,
     getUserById,
     addUser

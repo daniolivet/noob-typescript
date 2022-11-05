@@ -11,7 +11,6 @@ router.get('/all', (_req, res) => {
 router.get('/:id', (req, res) => {
 
   try {
-
     const id = parseId(+req.params.id)
 
     const user = usersServices.getUserById(id)
@@ -22,7 +21,6 @@ router.get('/:id', (req, res) => {
         code: 404,
         message: 'User not found.'
       })  
-
   } catch (err) {
     res.status(400).send({
       code: 400,
@@ -40,6 +38,27 @@ router.post('/add', (req, res) => {
     const addedUser = usersServices.addUser(newUser)
   
     res.send(addedUser)
+  } catch (err) {
+    res.status(400).send({
+      code: 400,
+      message: err.message
+    })
+  }
+
+})
+
+router.delete('/:id', (req, res) => {
+
+  try {
+    const id = parseId(+req.params.id)
+
+    const userDeleted = usersServices.deleteUser(id)
+
+    res.status(200).send({
+      code: 200,
+      message: 'User deleted.',
+      data: userDeleted
+    })
   } catch (err) {
     res.status(400).send({
       code: 400,
