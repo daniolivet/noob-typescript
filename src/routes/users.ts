@@ -1,5 +1,6 @@
 import express from 'express'
 import usersServices from '../services/Users/usersServices'
+import toNewUserEntry from '../services/Users/validations'
 
 const router = express.Router()
 
@@ -11,7 +12,7 @@ router.get('/:id', (req, res) => {
   if( isNaN(+req.params.id) ) {
     return res.status(400).send({
       code: 400,
-      message: 'Id should be a number.'
+      message: 'Id param should be a number.'
     })
   }
 
@@ -25,8 +26,19 @@ router.get('/:id', (req, res) => {
     })
 })
 
-router.post('/add', (_req, res) => {
-  res.send('Add new user')
+router.post('/add', (req, res) => {
+  try {    
+    const newUser = toNewUserEntry(req.body);
+  
+    const addedUser = usersServices.addUser(newUser)
+  
+    res.send(addedUser)
+  } catch (err) {
+    res.status(400).send({
+      code: 400,
+      message: err.message
+    })
+  }
 })
 
 export default router

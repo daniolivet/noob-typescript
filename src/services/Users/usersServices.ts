@@ -1,5 +1,6 @@
 import usersData from './users.json'
-import { UserEntry, NoPasswordInUserEntry } from '../../types'
+import { UserEntry, NoPasswordInUserEntry, AddUserEntry } from '../../types'
+import { Roles } from '../../enums'
 
 const users: UserEntry[] = usersData as UserEntry[]
 
@@ -28,8 +29,17 @@ const getUserById = ( id: number ): NoPasswordInUserEntry | undefined => {
     return undefined
 }
 
-const addUser = () => {
-    return null;
+const addUser = ( newUserEntry:AddUserEntry ): AddUserEntry  => {
+    const newUser = {
+        id: users.length + 1,
+        ...newUserEntry,
+        rol: Roles.Subscriber,
+        create_date: new Date().toLocaleDateString()
+    }
+
+    users.push(newUser)
+
+    return newUser
 }
 
 export default {

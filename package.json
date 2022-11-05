@@ -28,12 +28,15 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "email-validator": "^2.0.4",
     "express": "^4.18.2"
   },
   "eslintConfig": {
     "parserOptions": {
       "project": "./tsconfig.json"
     },
-    "extends": ["./node_modules/ts-standard/eslintrc.json"]
+    "extends": [
+      "./node_modules/ts-standard/eslintrc.json"
+    ]
   }
 }
