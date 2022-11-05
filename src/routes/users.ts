@@ -1,6 +1,6 @@
 import express from 'express'
 import usersServices from '../services/Users/usersServices'
-import toNewUserEntry from '../services/Users/validations'
+import { toNewUserEntry, parseId } from '../services/Users/validations'
 
 const router = express.Router()
 
@@ -9,24 +9,31 @@ router.get('/all', (_req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-  if( isNaN(+req.params.id) ) {
-    return res.status(400).send({
+
+  try {
+
+    const id = parseId(+req.params.id)
+
+    const user = usersServices.getUserById(id)
+
+    return ( user !== undefined ) 
+      ? res.send(user)
+      : res.status(404).send({
+        code: 404,
+        message: 'User not found.'
+      })  
+
+  } catch (err) {
+    res.status(400).send({
       code: 400,
-      message: 'Id param should be a number.'
+      message: err.message
     })
   }
-
-  const user = usersServices.getUserById(+req.params.id)
-
-  return ( user !== undefined ) 
-    ? res.send(user)
-    : res.status(404).send({
-      code: 404,
-      message: 'User not found.'
-    })
+  
 })
 
 router.post('/add', (req, res) => {
+
   try {    
     const newUser = toNewUserEntry(req.body);
   
@@ -39,6 +46,7 @@ router.post('/add', (req, res) => {
       message: err.message
     })
   }
+
 })
 
 export default router

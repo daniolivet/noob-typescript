@@ -1,14 +1,12 @@
 import { AddUserEntry } from "../../types"
-import { isString, isEmail } from '../../utils'
+import { isString, isEmail, isNumber } from '../../utils'
 
 const parseProp = ( property: any, nameOfProperty:string ):string => {
-
     if( !isString(property) ) {
         throw new Error(`Incorrect or missing ${nameOfProperty}`)
     }
 
     return property
-
 }
 
 const parseEmail = (email: any): string => {
@@ -19,8 +17,19 @@ const parseEmail = (email: any): string => {
     return email
 }
 
-const toNewUserEntry = (object: any):AddUserEntry => {
+export const parseId = (id: any): number => {
+    if( id.lenght === 0  ) {
+        throw new Error('Id parameter is empty.')
+    }
 
+    if(!isNumber(id)) {
+        throw new Error('Id should be a number.')
+    }
+
+    return id;
+}
+
+export const toNewUserEntry = (object: any):AddUserEntry => {
     const newUser:AddUserEntry = {
         name: parseProp(object.name, 'name'),
         surnames: parseProp(object.surnames, 'surnames'),
@@ -31,7 +40,4 @@ const toNewUserEntry = (object: any):AddUserEntry => {
     } 
 
     return newUser
-
 }
-
-export default toNewUserEntry

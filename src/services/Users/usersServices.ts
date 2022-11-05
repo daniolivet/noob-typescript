@@ -30,6 +30,12 @@ const getUserById = ( id: number ): NoPasswordInUserEntry | undefined => {
 }
 
 const addUser = ( newUserEntry:AddUserEntry ): AddUserEntry  => {
+
+    const emailExist = users.find( user => user.email === newUser.email )
+    if( emailExist ) {
+        throw new Error(`A user with this email already exists.`)
+    }
+
     const newUser = {
         id: users.length + 1,
         ...newUserEntry,
