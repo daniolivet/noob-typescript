@@ -1,19 +1,31 @@
 import usersData from './users.json'
-import { UserEntry, NonDateCreatedUserEntry } from '../../types'
+import { UserEntry, NoPasswordInUserEntry } from '../../types'
 
 const users: UserEntry[] = usersData as UserEntry[]
 
-const getUsers = (): Array<NonDateCreatedUserEntry> => {
-    return users.map( ({ id, name, surnames, nickname, email, password, address, rol }) => ({
+const getUsers = (): NoPasswordInUserEntry[] => {
+    return users.map( ({ id, name, surnames, nickname, email, address, rol, create_date }) => ({
         id, 
         name, 
         surnames, 
         nickname, 
         email, 
-        password, 
         address, 
-        rol
+        rol,
+        create_date
     }))
+}
+
+const getUserById = ( id: number ): NoPasswordInUserEntry | undefined => {
+    const user = users.find( user => user.id === id)
+
+    if( user !== undefined ) {
+        const { password, ...restOfUser } = user
+
+        return restOfUser
+    }
+
+    return undefined
 }
 
 const addUser = () => {
@@ -22,5 +34,6 @@ const addUser = () => {
 
 export default {
     getUsers,
+    getUserById,
     addUser
 }

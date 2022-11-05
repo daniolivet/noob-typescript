@@ -12,4 +12,4 @@ export interface UserEntry {
     create_date: string
 }
 
-export type NonDateCreatedUserEntry = Omit<UserEntry, 'create_date'>
+export type NoPasswordInUserEntry = Omit<UserEntry, 'password'>
