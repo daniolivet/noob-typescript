@@ -1,5 +1,16 @@
 import express from 'express'
 import usersRouter from './routes/users'
+import { DBConfig } from "./Database/data-source"
+import "reflect-metadata"
+
+// establish database connection
+DBConfig.initialize()
+    .then(() => {
+        console.log("Data Source has been initialized!")
+    })
+    .catch((err) => {
+        console.error("Error during Data Source initialization:", err)
+    })
 
 const app = express()
 
