@@ -1,13 +1,14 @@
 import { DataSource } from "typeorm"
+import 'dotenv/config'
 
 export const DBConfig = new DataSource({
     type: "mysql",
-    host: "localhost",
-    port: 3306,
-    username: "daniel.olivet",
-    password: "Malaga1997//",
-    database: "noobts_db",
-    entities: [__dirname + "/Database/Entity/*{.js,.ts}"],
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    entities: [__dirname + "/Entity/*{.ts}"],
     synchronize: true,
     logging: false,
 })

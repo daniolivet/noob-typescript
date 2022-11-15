@@ -4,8 +4,8 @@ import {
     NoPasswordInUserEntry, 
     AddUserEntry,
     UpdateUserEntry 
-} from '../../types'
-import { Roles } from '../../enums'
+} from '../../types/types'
+import { Roles } from '../../types/enums'
 
 const users: UserEntry[] = usersData as UserEntry[]
 

@@ -1,4 +1,4 @@
-import { AddUserEntry, UpdateUserEntry } from "../../types"
+import { AddUserEntry, UpdateUserEntry } from "../../types/types"
 import { isString, isEmail, isNumber } from '../../utils'
 
 const parseProp = ( property: any, nameOfProperty:string ):string => {
