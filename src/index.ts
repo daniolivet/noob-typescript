@@ -1,17 +1,8 @@
 import express from 'express'
 import usersRouter from './routes/users'
-import { DBConfig } from "./Database/data-source"
+import { DBConfig } from "./database/config"
 import "reflect-metadata"
 import 'dotenv/config'
-
-// establish database connection
-DBConfig.initialize()
-    .then(() => {
-        console.log("Data Source has been initialized!")
-    })
-    .catch((err) => {
-        console.error("Error during Data Source initialization:", err)
-    })
 
 const app = express()
 
@@ -28,3 +19,12 @@ const PORT = process.env.SERVER_PORT || 3000
 app.listen(PORT, () => {
   console.log(`Server running in port ${PORT}`)
 })
+
+// DB Connection
+DBConfig.initialize()
+    .then(() => {
+        console.log("DB has been initialized!")
+    })
+    .catch((err) => {
+        console.error("Error during Data Source initialization:", err)
+    })
