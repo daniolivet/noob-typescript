@@ -16,14 +16,13 @@ app.use('/users', usersRouter)
 
 const PORT = process.env.SERVER_PORT || 3000
 
-app.listen(PORT, () => {
-  console.log(`Server running in port ${PORT}`)
-})
-
 // DB Connection
 DBConfig.initialize()
     .then(() => {
-        console.log("DB has been initialized!")
+      app.listen(PORT, () => {
+        console.log(`Server running in port ${PORT}`)
+        console.log(`Database initialized! 🚀`);
+      })
     })
     .catch((err) => {
         console.error("Error during Data Source initialization:", err)

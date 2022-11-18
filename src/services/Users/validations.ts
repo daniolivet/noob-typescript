@@ -31,9 +31,9 @@ export const parseId = (id: any): number => {
 
 export const toNewUserEntry = (object: any):AddUserEntry => {
     const newUser:AddUserEntry = {
-        name: parseProp(object.name, 'name'),
-        surnames: parseProp(object.surnames, 'surnames'),
-        nickname: parseProp(object.nickname, 'nickname'),
+        firstName: parseProp(object.firstName, 'firstName'),
+        lastName: parseProp(object.lastName, 'lastName'),
+        nickName: parseProp(object.nickName, 'nickName'),
         email: parseEmail(object.email),
         password: parseProp(object.password, 'password'),
         address: parseProp(object.address, 'address')
@@ -44,9 +44,9 @@ export const toNewUserEntry = (object: any):AddUserEntry => {
 
 export const toUpdateUserEntry = ( object: any ): UpdateUserEntry => {
     const updateUser:UpdateUserEntry = {
-        name: parseProp(object.name, 'name'),
-        surnames: parseProp(object.surnames, 'surnames'),
-        nickname: parseProp(object.nickname, 'nickname'),
+        firstName: parseProp(object.firstName, 'firstName'),
+        lastName: parseProp(object.lastName, 'lastName'),
+        nickName: parseProp(object.nickName, 'nickName'),
         email: parseEmail(object.email),
         address: parseProp(object.address, 'address')
     } 

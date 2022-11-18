@@ -1,90 +1,83 @@
-import usersData from './users.json'
 import { 
-    UserEntry, 
-    NoPasswordInUserEntry, 
     AddUserEntry,
-    UpdateUserEntry 
+    NoPasswordInUserEntry,
+    UpdateUserEntry,
 } from '../../types/types'
 import { Roles } from '../../types/enums'
+import { Users } from '../../database/entity/user.entity'
+import { DBConfig } from '../../database/config'
 
-const users: UserEntry[] = usersData as UserEntry[]
 
-const getUsers = (): NoPasswordInUserEntry[] => {
-    return users.map( ({ id, name, surnames, nickname, email, address, rol, create_date }) => ({
-        id, 
-        name, 
-        surnames, 
-        nickname, 
-        email, 
-        address, 
-        rol,
-        create_date
-    }))
+const userRepository = DBConfig.getRepository(Users)
+
+const getUsers = async (): Promise<Users[]> => {
+    return await userRepository.find();
 }
 
-const getUserById = ( id: number ): NoPasswordInUserEntry | undefined => {
-    const user = users.find( user => user.id === id)
+const getUserById = async ( id: number ): Promise<NoPasswordInUserEntry | Object> => {
+    const user = await userRepository.findBy({
+        id: id
+    })
 
-    if( user !== undefined ) {
-        const { password, ...restOfUser } = user
+    if( user.length > 0 ) {
+        const { password, ...restOfUser } = user[0]
 
         return restOfUser
     }
 
-    return undefined
+    return {}
 }
 
-const addUser = ( newUserEntry:AddUserEntry ): AddUserEntry  => {
+const addUser = async ( newUserEntry:AddUserEntry ):Promise<Number>  => {
 
-    const emailExist = users.find( user => user.email === newUser.email )
-    if( emailExist ) {
-        throw new Error(`A user with this email already exists.`)
+    const emailExist = await userRepository.findBy({
+        email: newUserEntry.email
+    })
+
+    if( emailExist.length > 0 ) {
+        throw new Error('Exists an user with this email.')
     }
 
-    const newUser = {
-        id: users.length + 1,
+    const newUser = await userRepository.insert({
         ...newUserEntry,
         rol: Roles.Subscriber,
-        create_date: new Date().toLocaleDateString()
-    }
+    })
 
-    users.push(newUser)
-
-    return newUser
+    return newUser.raw.insertId
 }
 
-const deleteUser = ( id: number ) : UserEntry[] => {
-    const userIndex = users.findIndex( user => user.id === id)
+const deleteUser = async ( id: number ): Promise<Boolean> => {
+    const user = await getUserById(id)
 
-    if( !userIndex ) {
+    if( Object.keys(user).length === 0 ) {
         throw new Error('User doesn\'t exist')
     }
     
-    const user = users.splice(userIndex)
-
-    return user
+    const userDelete = await userRepository.delete(id) 
+    
+    return Boolean(userDelete)
 }
 
-const updateUser = ( id: number, newUserData: UpdateUserEntry ) => {
+const updateUser = async ( id: number, newUserData: UpdateUserEntry ): Promise<boolean> => {
 
-    const index = users.findIndex(user => user.id === id)
-    const user  = users[index]
+    const user = await getUserById(id)
 
-    const userUpdate = {
-        name: newUserData.name,
-        surnames: newUserData.surnames,
-        nickname: newUserData.nickname,
-        email: newUserData.email,
-        address: newUserData.address
+    if( Object.keys(user).length === 0 ) {
+        throw new Error('User not found')
     }
 
-    return users[index] = {
-        id: user.id,
-        ...userUpdate,
-        password: user.password,
-        rol: user.rol,
-        create_date: user.create_date,
-    }
+    const userUpdated = await userRepository.update(
+        id,
+        {
+            "firstName": newUserData.firstName,
+            "lastName": newUserData.lastName,
+            "nickName": newUserData.nickName,
+            "email": newUserData.email,
+            "address": newUserData.address
+        }
+    )
+
+    return Boolean(userUpdated)
 }
 
 export default {

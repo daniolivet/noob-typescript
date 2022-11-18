@@ -2,29 +2,41 @@ import express from 'express'
 import usersServices from '../services/Users/usersServices'
 import { 
   toNewUserEntry,
-  toUpdateUserEntry, 
-  parseId 
+  parseId, 
+  toUpdateUserEntry
 } from '../services/Users/validations'
 
 const router = express.Router()
 
-router.get('/all', (_req, res) => {
-  res.send(usersServices.getUsers())
+router.get('/', async (_req, res) => {
+  let users = await usersServices.getUsers()
+
+  res.status(200).send({
+    code: 200,
+    message: 'Users found',
+    data: users
+  })
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
 
   try {
     const id = parseId(+req.params.id)
 
-    const user = usersServices.getUserById(id)
+    const user = await usersServices.getUserById(id)
+    
+    if( Object.keys(user).length !== 0) {
+      res.status(200).send({
+        code: 200,
+        message: 'User found',
+        data: user
+      })
+    }
 
-    return ( user !== undefined ) 
-      ? res.send(user)
-      : res.status(404).send({
-        code: 404,
-        message: 'User not found.'
-      })  
+    res.status(404).send({
+      code: 404,
+      message: 'User not found.'
+    })
   } catch (err) {
     res.status(400).send({
       code: 400,
@@ -34,14 +46,18 @@ router.get('/:id', (req, res) => {
   
 })
 
-router.post('/add', (req, res) => {
+router.post('/add', async (req, res) => {
 
   try {    
     const newUser = toNewUserEntry(req.body);
   
-    const addedUser = usersServices.addUser(newUser)
-  
-    res.send(addedUser)
+    const addedUser = await usersServices.addUser(newUser)
+
+    res.status(200).send({
+      code: 200,
+      message: 'User added',
+      data: addedUser
+    })
   } catch (err) {
     res.status(400).send({
       code: 400,
@@ -51,39 +67,51 @@ router.post('/add', (req, res) => {
 
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
 
   try {
     const id = parseId(+req.params.id)
 
-    const userDeleted = usersServices.deleteUser(id)
+    const userDeleted = await usersServices.deleteUser(id)
+    
+    if( userDeleted ) {
+      res.status(200).send({
+        code: 200,
+        message: 'User deleted.',
+      })
+    }
 
-    res.status(200).send({
-      code: 200,
-      message: 'User deleted.',
-      data: userDeleted
+    res.status(500).send({
+      code: 500,
+      message: `Something was wrong deleting user with id: ${id}.`,
     })
+  
   } catch (err) {
-    res.status(400).send({
-      code: 400,
+    res.status(500).send({
+      code: 500,
       message: err.message
     })
   }
 
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const id          = parseId(+req.params.id)
     const newUserData = toUpdateUserEntry(req.body)
 
-    const userUpdated = usersServices.updateUser(id, newUserData)
+    const userUpdated = await usersServices.updateUser(id, newUserData)
 
-    console.log(userUpdated);
-    res.status(200).send({
-      code: 200,
-      message: 'User updated',
-      data: userUpdated
+    if( userUpdated ) {
+      res.status(200).send({
+        code: 200,
+        message: 'User updated.',
+      })
+    }
+
+    res.status(500).send({
+      code: 500,
+      message: `Something was wrong updating user with id: ${id}.`,
     })
   } catch (err) {
     res.status(400).send({
