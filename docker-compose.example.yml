@@ -1,0 +1,45 @@
+version: "3.7"
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  db: 
+    image: mysql:8.0.31
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'dbname'
+      MYSQL_USER: 'dbuser'
+      MYSQL_PASSWORD: 'dbpass'
+      MYSQL_ROOT_PASSWORD: 'dbrootpass'
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3308:3308'
+    networks:
+      - app-network
+    expose:
+      - '3308'
+    volumes:
+      - mysql-db:/var/lib/mysql
+  noobts:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - 3000:3000
+    networks:
+      - app-network
+    environment:
+      - DB_PORT=3308
+      - DB_HOST=db
+      - DB_USERNAME=dbuser
+      - DB_PASSWORD=dbpass
+      - DB_NAME=dbname
+    volumes:
+      - noobts-app:/home/app
+    command: npm start
+
+volumes:
+  mysql-db:
+  noobts-app:
