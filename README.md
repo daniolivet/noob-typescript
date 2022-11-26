@@ -13,6 +13,11 @@ This is a small API to practise my small skills in Typescript.
 
 ## Run Locally
 
+First you have to set environment variables:
+
+- Create .env file from .env.example
+
+
 Run API
 ```
 npm i
